@@ -1,4 +1,4 @@
-# PixGuard - Detecção de Padrões Suspeitos em Pix
+# Detecção de Padrões Suspeitos em Pix
  
 Projeto que analisa transações Pix pra encontrar padrões que podem indicar fraude. Usa Python, SQLite, SQL, DAX e Power BI.
  
@@ -61,16 +61,14 @@ A base tem 5.000 transações normais, além das transações que simulam os pad
  
 O `carregar_dados.py` lê o CSV e cria o banco `pix.db`, com a tabela `transacoes_pix`:
  
-| Campo | Descrição |
-|---|---|
-| `id_transacao` | Identificador da transação |
-| `cpf_origem` | CPF que iniciou a transação |
-| `cpf_destino` | CPF que recebeu a transação |
-| `tipo_transacao` | Tipo da operação |
-| `valor` | Valor da transação |
-| `data` | Data da operação |
-| `hora` | Horário da operação |
-| `minuto` | Data, hora e minuto juntos |
+- `id_transacao` – identificador da transação
+- `cpf_origem` – CPF que iniciou a transação
+- `cpf_destino` – CPF que recebeu a transação
+- `tipo_transacao` – tipo da operação
+- `valor` – valor da transação
+- `data` – data da operação
+- `hora` – horário da operação
+- `minuto` – data, hora e minuto juntos
  
 Também são criados índices pra facilitar as buscas por CPF, minuto, valor e horário.
  
@@ -82,11 +80,9 @@ As regras usam SQL, com `GROUP BY`, `HAVING` e `CASE`.
  
 Identifica quando o mesmo CPF faz 5 ou mais transferências Pix no mesmo minuto.
  
-| Quantidade de transações | Risco |
-|---:|---|
-| Menos de 5 | Normal |
-| 5 a 7 | Médio |
-| 8 ou mais | Alto |
+- Menos de 5 transações – Normal
+- 5 a 7 transações – Médio
+- 8 ou mais transações – Alto
  
 O objetivo é achar uma concentração incomum de transferências num intervalo muito curto.
  
@@ -94,11 +90,9 @@ O objetivo é achar uma concentração incomum de transferências num intervalo 
  
 Identifica quando o mesmo CPF faz 4 ou mais transações com exatamente o mesmo valor.
  
-| Quantidade | Risco |
-|---:|---|
-| Menos de 4 | Normal |
-| 4 a 5 | Médio |
-| 6 ou mais | Alto |
+- Menos de 4 repetições – Normal
+- 4 a 5 repetições – Médio
+- 6 ou mais repetições – Alto
  
 O objetivo é achar repetição sistemática de operações com o mesmo valor.
  
@@ -106,10 +100,8 @@ O objetivo é achar repetição sistemática de operações com o mesmo valor.
  
 Identifica transações de Pix enviado feitas entre 00h e 05h59, com valor de R$ 1.000 ou mais.
  
-| Valor | Risco |
-|---:|---|
-| R$ 1.000 até R$ 4.999,99 | Médio |
-| R$ 5.000 ou mais | Alto |
+- De R$ 1.000 até R$ 4.999,99 – Médio
+- R$ 5.000 ou mais – Alto
  
 O objetivo é achar transações de valor alto feitas num horário considerado incomum.
  
@@ -117,14 +109,12 @@ O objetivo é achar transações de valor alto feitas num horário considerado i
  
 O `exportar_alertas.py` roda as regras e gera o `alertas_pix.csv`, com os campos:
  
-| Campo | Descrição |
-|---|---|
-| `tipo_alerta` | Tipo do padrão identificado |
-| `cpf_origem` | CPF relacionado ao alerta |
-| `data_hora_referencia` | Data e hora do alerta |
-| `quantidade` | Quantidade de transações relacionadas |
-| `valor_total` | Valor total associado ao alerta |
-| `risco` | Classificação do risco |
+- `tipo_alerta` – tipo do padrão identificado
+- `cpf_origem` – CPF relacionado ao alerta
+- `data_hora_referencia` – data e hora do alerta
+- `quantidade` – quantidade de transações relacionadas
+- `valor_total` – valor total associado ao alerta
+- `risco` – classificação do risco
  
 Os tipos de alerta são: `SMURFING`, `VALOR_REPETIDO` e `HORARIO_ATIPICO`.
  
